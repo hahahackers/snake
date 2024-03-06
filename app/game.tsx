@@ -21,10 +21,11 @@ export const Game = observer(() => {
             {col.map((row, rind) => (
               <div
                 className={cx(
-                  "bg-slate-100 w-6 h-6 flex justify-center items-center rounded",
+                  "w-6 h-6 flex justify-center items-center rounded",
                   {
                     "bg-green-200": row === "S",
                     "bg-red-200": row === "F",
+                    "bg-slate-100": row === "_"
                   }
                 )}
                 key={rind}
