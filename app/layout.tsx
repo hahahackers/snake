@@ -16,7 +16,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={`${inter.className} h-screen flex flex-col`}>
+        <nav>
+          <ul className="flex gap-4 uppercaseh">
+            <li>
+              <a href="snake">Snake</a>
+            </li>
+            <li>
+              <a href="plainsnake">Also Snake</a>
+            </li>
+          </ul>
+        </nav>
+
+        {children}
+      </body>
     </html>
   );
 }

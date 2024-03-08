@@ -1,6 +1,16 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-  output: "export",
-};
+const nextConfig = {};
 
-module.exports = nextConfig;
+module.exports = {
+  async redirects() {
+    return [
+      {
+        source: "/",
+        destination: "/snake",
+        permanent: true,
+      },
+    ];
+  },
+  output: "export",
+  reactStrictMode: false,
+};
