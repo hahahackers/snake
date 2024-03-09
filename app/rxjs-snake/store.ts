@@ -34,7 +34,7 @@ const tick$ = interval(500);
 const snake$ = tick$.pipe(
   withLatestFrom(direction$),
   scan(
-    (snake, [_, direction, fruit]) => {
+    (snake, [_, direction]) => {
       const [x, y] = snake[0];
       switch (direction) {
         case 'up':
@@ -46,6 +46,7 @@ const snake$ = tick$.pipe(
         case 'right':
           return [[x + 1, y], ...snake.slice(0, -1)];
       }
+      return snake;
     },
     [
       [0, 0],

@@ -102,7 +102,6 @@ export default function Home() {
     return () => {
       console.log('clear interval');
       clearInterval(interval);
-      interval = undefined;
     };
   }, []);
 
