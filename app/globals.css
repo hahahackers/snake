@@ -1,3 +1,29 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+  .eyes {
+    @apply relative;
+  }
+  .eyes::before {
+    @apply w-2 h-2 bg-black absolute z-10 rounded-full -right-0.5 top-1;
+    content: '';
+  }
+  .eyes::after {
+    @apply w-2 h-2 bg-black absolute z-10 rounded-full -right-0.5 bottom-1;
+    content: '';
+  }
+  .eyes-right {
+    transform: rotate(0deg);
+  }
+  .eyes-down {
+    transform: rotate(90deg);
+  }
+  .eyes-left {
+    transform: rotate(180deg);
+  }
+  .eyes-up {
+    transform: rotate(270deg);
+  }
+}

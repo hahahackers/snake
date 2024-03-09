@@ -4,6 +4,6 @@ const DynamicGame = dynamic(() => import('./game'), {
   ssr: false,
 });
 
-export default function Home() {
+export default function Page() {
   return <DynamicGame />;
 }

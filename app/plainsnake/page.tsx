@@ -1,20 +1,19 @@
-"use client";
-import cx from "clsx";
-import { useEffect, useState } from "react";
-import _, { set } from "lodash";
+'use client';
+import cx from 'clsx';
+import { useEffect, useState } from 'react';
+import _, { set } from 'lodash';
 
-let interval: NodeJS.Timeout | null = null;
-let fruit: number[] = [5, 5];
+let interval: ReturnType<typeof setInterval>;
 
 function getHead(direction: string, x: number, y: number): number[] {
   switch (direction) {
-    case "right":
+    case 'right':
       return [y, x + 1];
-    case "left":
+    case 'left':
       return [y, x - 1];
-    case "up":
+    case 'up':
       return [y - 1, x];
-    case "down":
+    case 'down':
       return [y + 1, x];
   }
   return [0, 0];
@@ -25,87 +24,112 @@ function addFruit(snakeArg: number[][]) {
   do {
     y = Math.floor(Math.random() * 10);
     x = Math.floor(Math.random() * 10);
-    fruit = [y, x];
+    return [y, x];
   } while (snakeArg.some(([sy, sx]) => sy === y && sx === x));
 }
 
-let direction = "right";
+let direction = 'right';
 export default function Home() {
-  const [snake, setSnake] = useState([
-    [1, 1],
-    [2, 1],
-    [3, 1],
-  ]);
-  const [phase, setPhase] = useState("running");
+  const [data, setData] = useState({
+    snake: [
+      [1, 1],
+      [2, 1],
+      [3, 1],
+    ],
+    fruit: [5, 5],
+  });
+  const [phase, setPhase] = useState('running');
+
+  function run() {
+    console.log('tick');
+    setData(({ snake, fruit }) => {
+      console.log('set snake');
+      const newHead = getHead(direction, snake[0][1], snake[0][0]);
+      const [y, x] = newHead;
+      if (
+        y < 0 ||
+        y >= 10 ||
+        x < 0 ||
+        x >= 10 ||
+        snake.some(([sy, sx]) => sy === y && sx === x)
+      ) {
+        setPhase('lost');
+        clearInterval(interval);
+        return { snake, fruit };
+      }
+      const newSnake = [newHead, ...snake];
+
+      if (!(x === fruit[1] && y === fruit[0])) {
+        console.log('1', snake, newSnake, fruit);
+        newSnake.pop();
+      } else {
+        console.log('2', snake, newSnake, fruit);
+
+        return {
+          snake: newSnake,
+          fruit: addFruit(newSnake),
+        };
+      }
+
+      return {
+        snake: newSnake,
+        fruit,
+      };
+    });
+  }
 
   useEffect(() => {
-    document.addEventListener("keydown", (e) => {
-      console.log(e.key);
-
+    console.log(interval);
+    document.addEventListener('keydown', (e) => {
       switch (e.key) {
-        case "ArrowUp":
-          direction = direction === "down" ? "down" : "up";
+        case 'ArrowUp':
+          direction = direction === 'down' ? 'down' : 'up';
           break;
-        case "ArrowDown":
-          direction = direction === "up" ? "up" : "down";
+        case 'ArrowDown':
+          direction = direction === 'up' ? 'up' : 'down';
           break;
-        case "ArrowLeft":
-          direction = direction === "right" ? "right" : "left";
+        case 'ArrowLeft':
+          direction = direction === 'right' ? 'right' : 'left';
           break;
-        case "ArrowRight":
-          direction = direction === "left" ? "left" : "right";
+        case 'ArrowRight':
+          direction = direction === 'left' ? 'left' : 'right';
           break;
       }
     });
-    interval = setInterval(() => {
-      setSnake((prev) => {
-        const newHead = getHead(direction, prev[0][1], prev[0][0]);
-        const [y, x] = newHead;
-        if (
-          y < 0 ||
-          y >= 10 ||
-          x < 0 ||
-          x >= 10 ||
-          prev.some(([sy, sx]) => sy === y && sx === x)
-        ) {
-          setPhase("lost");
-          return prev;
-        }
-        const newSnake = [newHead, ...prev];
 
-        if (!(x === fruit[1] && y === fruit[0])) {
-          newSnake.pop();
-        } else {
-          addFruit(newSnake);
-        }
-        return newSnake;
-      });
-    }, 200);
+    console.log('set interval');
+    interval = setInterval(run, 300);
     return () => {
-      clearInterval(interval!);
+      console.log('clear interval');
+      clearInterval(interval);
+      interval = undefined;
     };
   }, []);
 
   const field = _.times(10, (y) =>
     _.times(10, (x) => {
-      if (snake.some(([sy, sx]) => sy === y && sx === x)) {
-        return "S";
+      if (data.snake.some(([sy, sx]) => sy === y && sx === x)) {
+        return 'S';
       }
-      if (fruit[0] === y && fruit[1] === x) {
-        return "F";
+      if (data.fruit[0] === y && data.fruit[1] === x) {
+        return 'F';
       }
-      return "_";
+      return '_';
     })
   );
 
   function handlePlayAgain(): void {
-    setSnake([
-      [1, 1],
-      [2, 1],
-      [3, 1],
-    ]);
-    setPhase("running");
-    direction = "right";
+    setData({
+      snake: [
+        [1, 1],
+        [2, 1],
+        [3, 1],
+      ],
+      fruit: [5, 5],
+    });
+    setPhase('running');
+    direction = 'right';
+    interval = setInterval(run, 300);
   }
 
   return (
@@ -116,11 +140,11 @@ export default function Home() {
             {col.map((row, rind) => (
               <div
                 className={cx(
-                  "w-6 h-6 flex justify-center items-center rounded",
+                  'w-6 h-6 flex justify-center items-center rounded',
                   {
-                    "bg-green-200": row === "S",
-                    "bg-red-200": row === "F",
-                    "bg-slate-100": row === "_",
+                    'bg-green-200': row === 'S',
+                    'bg-red-200': row === 'F',
+                    'bg-slate-100': row === '_',
                   }
                 )}
                 key={rind}
@@ -129,7 +153,7 @@ export default function Home() {
           </div>
         ))}
       </div>
-      {phase === "lost" && (
+      {phase === 'lost' && (
         <div className="mt-12 text-center">
           You Lose!
           <br />
