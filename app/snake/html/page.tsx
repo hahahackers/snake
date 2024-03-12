@@ -1,6 +1,6 @@
 import dynamic from 'next/dynamic';
 
-const DynamicGame = dynamic(() => import('./game'), {
+const DynamicGame = dynamic(() => import('../html/html-renderer'), {
   ssr: false,
 });
 

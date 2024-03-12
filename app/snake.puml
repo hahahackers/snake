@@ -1,0 +1,40 @@
+@startuml Snake Class
+
+class Game {
+    -input()
+    -update()
+    -render()
+    +start() 
+    +pause()
+    +stop()
+}
+
+class Snake {
+    move()
+}
+
+class Fruit {
+    create()
+}
+
+class Controls {
+
+}
+
+@enduml
+
+@startuml Snake State
+
+hide empty description
+
+state startGame {
+    clearGameCells
+    createSnake
+    createFruit
+    startGameLoop
+}
+
+[*] --> startGame
+
+
+@enduml

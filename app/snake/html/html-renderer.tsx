@@ -2,11 +2,11 @@
 
 import { useEffect } from 'react';
 import _ from 'lodash';
-import { store as game } from './store';
+import { store as game } from '../(components)/store';
 import { observer } from 'mobx-react-lite';
 import cx from 'clsx';
 
-const Game = observer(() => {
+const HtmlRenderer = observer(() => {
   useEffect(() => {
     if (game.phase === 'idle') {
       game.setup();
@@ -66,4 +66,4 @@ const Game = observer(() => {
   );
 });
 
-export default Game;
+export default HtmlRenderer;
