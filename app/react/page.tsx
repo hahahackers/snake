@@ -1,7 +1,9 @@
 'use client';
-import cx from 'clsx';
+
 import { useEffect, useState } from 'react';
-import _, { set } from 'lodash';
+import _ from 'lodash';
+import { HtmlRenderer } from '@/app/_components/renderers/HtmlRenderer';
+import { Direction, Phase } from '@/app/_components/types';
 
 let interval: ReturnType<typeof setInterval>;
 
@@ -38,7 +40,7 @@ export default function Home() {
     ],
     fruit: [5, 5],
   });
-  const [phase, setPhase] = useState('running');
+  const [phase, setPhase] = useState<Phase>('running');
 
   function run() {
     console.log('tick');
@@ -46,13 +48,7 @@ export default function Home() {
       console.log('set snake');
       const newHead = getHead(direction, snake[0][1], snake[0][0]);
       const [y, x] = newHead;
-      if (
-        y < 0 ||
-        y >= 10 ||
-        x < 0 ||
-        x >= 10 ||
-        snake.some(([sy, sx]) => sy === y && sx === x)
-      ) {
+      if (y < 0 || y >= 10 || x < 0 || x >= 10 || snake.some(([sy, sx]) => sy === y && sx === x)) {
         setPhase('lost');
         clearInterval(interval);
         return { snake, fruit };
@@ -114,7 +110,7 @@ export default function Home() {
         return 'F';
       }
       return '_';
-    })
+    }),
   );
 
   function handlePlayAgain(): void {
@@ -132,38 +128,49 @@ export default function Home() {
   }
 
   return (
-    <main className="flex justify-center items-center flex-col flex-1">
-      <div className="flex flex-col gap-2">
-        {field.map((col, cind) => (
-          <div className="flex gap-2" key={cind}>
-            {col.map((row, rind) => (
-              <div
-                className={cx(
-                  'w-6 h-6 flex justify-center items-center rounded',
-                  {
-                    'bg-green-200': row === 'S',
-                    'bg-red-200': row === 'F',
-                    'bg-slate-100': row === '_',
-                  }
-                )}
-                key={rind}
-              ></div>
-            ))}
-          </div>
-        ))}
-      </div>
-      {phase === 'lost' && (
-        <div className="mt-12 text-center">
-          You Lose!
-          <br />
-          <button
-            className="bg-slate-200 px-4 py-2 rounded"
-            onClick={() => handlePlayAgain()}
-          >
-            Play Again
-          </button>
-        </div>
-      )}
-    </main>
+    <HtmlRenderer
+      game={{
+        board: field,
+        points: data.snake.length - 3,
+        start: phase === 'lost' ? handlePlayAgain : run,
+        phase: phase,
+      }}
+    />
   );
+
+  // return (
+  //   <main className="flex justify-center items-center flex-col flex-1">
+  //     <div className="flex flex-col gap-2">
+  //       {field.map((col, cind) => (
+  //         <div className="flex gap-2" key={cind}>
+  //           {col.map((row, rind) => (
+  //             <div
+  //               className={cx(
+  //                 'w-6 h-6 flex justify-center items-center rounded',
+  //                 {
+  //                   'bg-green-200': row === 'S',
+  //                   'bg-red-200': row === 'F',
+  //                   'bg-slate-100': row === '_',
+  //                 }
+  //               )}
+  //               key={rind}
+  //             ></div>
+  //           ))}
+  //         </div>
+  //       ))}
+  //     </div>
+  //     {phase === 'lost' && (
+  //       <div className="mt-12 text-center">
+  //         You Lose!
+  //         <br />
+  //         <button
+  //           className="bg-slate-200 px-4 py-2 rounded"
+  //           onClick={() => handlePlayAgain()}
+  //         >
+  //           Play Again
+  //         </button>
+  //       </div>
+  //     )}
+  //   </main>
+  // );
 }
